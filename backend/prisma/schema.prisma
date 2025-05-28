@@ -13,3 +13,49 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Users {
+  id           String  @id @default(uuid())
+  name         String  @unique
+  passwordHash String
+  admin        Boolean @default(false)
+
+  blogs    Blogs[]
+  comments Comments[]
+
+  @@map("users")
+}
+
+model Blogs {
+  id         String    @id @default(uuid())
+  title      String
+  content    String
+  likes      Int       @default(0)
+  published  Boolean   @default(false)
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  author    Users      @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  author_id String
+  comments  Comments[]
+
+  @@map("blogs")
+}
+
+model Comments {
+  id         String    @id @default(uuid())
+  content    String
+  created_at DateTime  @default(now())
+  updated_at DateTime?
+
+  author    Users  @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  author_id String
+  blog      Blogs  @relation(fields: [blog_id], references: [id], onDelete: Cascade)
+  blog_id   String
+
+  comments          Comments[] @relation("comments")
+  parent_comment    Comments?  @relation("comments", fields: [parent_comment_id], references: [id], onDelete: Cascade)
+  parent_comment_id String
+
+  @@map("comments")
+}
