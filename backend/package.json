@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "This project contains a standard blog api made in express",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,6 +23,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.21",
     "@types/supertest": "^6.0.3",
+    "prettier": "3.5.3",
     "prisma": "^6.8.2",
     "supertest": "^7.1.1",
     "tsx": "^4.19.4",
