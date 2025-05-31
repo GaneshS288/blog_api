@@ -14,6 +14,8 @@ describe("signup a new user", () => {
         app.use("/auth", authRouter);
         const user = { name: "ganesh", password: "blabbityy" };
 
-        await request(app).post("/auth/signup").send(user).expect(204);
+        const res = await request(app).post("/auth/signup").send(user).expect(201).expect("Content-Type", /application\/json/);
+
+        expect(res.body.data).toEqual({});
     });
 });

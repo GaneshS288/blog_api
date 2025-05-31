@@ -13,7 +13,7 @@ async function signupUser(req: Request, res: Response) {
 
     createUser(name, passwordhash);
 
-    res.sendStatus(204);
+    res.status(201).json({ status: 201, data: {} });
 }
 
 export { signupUser };
