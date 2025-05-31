@@ -2,8 +2,6 @@ import { PrismaClient } from "../../generated/prisma/index.js";
 import { DATABASE_URL } from "../envConfig.ts";
 export * from "../../generated/prisma/index.js";
 
-console.log(DATABASE_URL);
-
 const prisma = new PrismaClient({
     datasources: {
         db: {
