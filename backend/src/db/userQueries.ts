@@ -16,8 +16,8 @@ async function createUser(
     return user;
 }
 
-async function findUser(id: string): Promise<Users | null> {
-    const user = await prisma.users.findFirst({
+async function findUserById(id: number): Promise<Users | null> {
+    const user = await prisma.users.findUnique({
         where: { id },
         include: {
             blogs: true,
@@ -27,4 +27,15 @@ async function findUser(id: string): Promise<Users | null> {
     return user;
 }
 
-export { createUser, findUser };
+async function findUserByName(name: string): Promise<Users | null> {
+    const user = await prisma.users.findUnique({
+        where: { name },
+        include: {
+            blogs: true,
+        },
+    });
+
+    return user;
+}
+
+export { createUser, findUserById, findUserByName };
