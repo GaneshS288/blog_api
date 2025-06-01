@@ -15,7 +15,8 @@ datasource db {
 }
 
 model Users {
-  id           String  @id @default(uuid())
+  id           Int     @id @default(autoincrement()) @db.Integer
+  resource_id  String  @default(uuid())
   name         String  @unique
   passwordHash String
   admin        Boolean @default(false)
@@ -27,35 +28,38 @@ model Users {
 }
 
 model Blogs {
-  id         String    @id @default(uuid())
-  title      String
-  content    String
-  likes      Int       @default(0)
-  published  Boolean   @default(false)
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  id          Int       @id @default(autoincrement())
+  resource_id String    @default(uuid())
+  title       String
+  content     String
+  likes       Int       @default(0)
+  published   Boolean   @default(false)
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
 
   author    Users      @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  author_id String
+  author_id Int
   comments  Comments[]
 
   @@map("blogs")
 }
 
 model Comments {
-  id         String    @id @default(uuid())
-  content    String
-  created_at DateTime  @default(now())
-  updated_at DateTime?
+  id          Int       @id @default(autoincrement())
+  resource_id String    @default(uuid())
+  content     String
+  created_at  DateTime  @default(now())
+  updated_at  DateTime?
+  likes       Int       @default(0)
 
-  author    Users  @relation(fields: [author_id], references: [id], onDelete: Cascade)
-  author_id String
-  blog      Blogs  @relation(fields: [blog_id], references: [id], onDelete: Cascade)
-  blog_id   String
+  author    Users @relation(fields: [author_id], references: [id], onDelete: Cascade)
+  author_id Int
+  blog      Blogs @relation(fields: [blog_id], references: [id], onDelete: Cascade)
+  blog_id   Int
 
   comments          Comments[] @relation("comments")
   parent_comment    Comments?  @relation("comments", fields: [parent_comment_id], references: [id], onDelete: Cascade)
-  parent_comment_id String
+  parent_comment_id Int
 
   @@map("comments")
 }
