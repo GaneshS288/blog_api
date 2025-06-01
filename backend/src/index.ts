@@ -1,14 +1,5 @@
-import { createUser, findUser } from "./db/userQueries.ts";
-import prisma from "./db/prisma.ts";
-import express from "express";
+import app from "./app.ts";
 
-const app = express();
-
-await prisma.users.deleteMany();
-
-const user = await createUser("ganesh", "avssds", true);
-console.log(user);
-const foundUser = await findUser(user.id);
-console.log(foundUser);
+app.listen(3001, () => console.log("app is listening at port 3001"));
 
 
