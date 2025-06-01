@@ -11,9 +11,12 @@ async function signupUser(req: Request, res: Response) {
 
     const passwordhash = await bcrypt.hash(password, 12);
 
-    createUser(name, passwordhash);
+    await createUser(name, passwordhash);
 
-    res.status(201).json({ status: 201, data: {} });
+    res.status(201).json({
+        status: 201,
+        data: { message: "user successfully created" },
+    });
 }
 
 export { signupUser };
