@@ -16,9 +16,9 @@ async function createUser(
     return user;
 }
 
-async function findUserById(id: number): Promise<Users | null> {
+async function findUserById(id: string): Promise<Users | null> {
     const user = await prisma.users.findUnique({
-        where: { id },
+        where: { remote_id: id },
         include: {
             blogs: true,
         },

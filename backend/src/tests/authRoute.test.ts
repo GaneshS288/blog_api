@@ -1,6 +1,7 @@
 import { expect, test, describe, vi } from "vitest";
 import { createRequest, createResponse } from "node-mocks-http";
-import { signupUser } from "../controllers/auth.ts";
+import { compare } from "bcryptjs";
+import { signupUser, loginUser } from "../controllers/auth.ts";
 import { createUser, findUserByName } from "../db/userQueries.ts";
 
 // mock the function that calls database to create user
@@ -16,6 +17,26 @@ vi.mock("../db/userQueries.ts", () => {
             const user = users.find((user) => user.name === name);
             return user;
         }),
+    };
+});
+
+//mock bcrypt password compare method for login
+vi.mock("bcryptjs", async () => {
+    const actual = await vi.importActual("bcryptjs");
+
+    return {
+        default: {
+            ...actual,
+            compare: vi.fn((password) => {
+                const users = [
+                    { name: "martin", password: "stall$3000" },
+                    { name: "fuwante", password: "drift&3ace" },
+                ];
+
+                const user = users.find((user) => user.password === password);
+                return user;
+            }),
+        },
     };
 });
 
@@ -51,5 +72,20 @@ describe("signup a new user", () => {
             status: 400,
             data: { error: `A user with name '${user.name}' already exists` },
         });
+    });
+});
+
+describe("logging in a user", () => {
+    test("succesfully logs in", async () => {
+        const user = { name: "martin", password: "stall$3000" };
+        const req = createRequest({ method: "POST", body: user });
+        const res = createResponse();
+        vi.spyOn(res, "status");
+        const mockedJson = vi.spyOn(res, "json");
+
+        await loginUser(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(mockedJson.mock.lastCall?.[0].data.message).toBe("Successfully logged in")
     });
 });
