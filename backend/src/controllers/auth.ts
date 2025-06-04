@@ -1,14 +1,33 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { ZodError } from "zod/v4";
 import { createUser, findUserByName } from "../db/userQueries.ts";
+import { UserSignupSchema, UserLoginSchema } from "../validation/userSchema.ts";
 
 async function signupUser(req: Request, res: Response) {
     const {
         name,
         password,
+        passwordConfirm,
         secretPassword,
-    }: { name: string; password: string; secretPassword: string } = req.body;
+    }: {
+        name: string;
+        password: string;
+        passwordConfirm: string;
+        secretPassword: string;
+    } = req.body;
+
+    const validationResult = UserSignupSchema.safeParse({
+        name,
+        password,
+        passwordConfirm,
+    });
+
+    if (validationResult.error instanceof ZodError) {
+        res.status(400).json(validationResult.error);
+        return;
+    }
 
     const userExists = await findUserByName(name);
 
@@ -31,6 +50,13 @@ async function signupUser(req: Request, res: Response) {
 
 async function loginUser(req: Request, res: Response) {
     const { name, password }: { name: string; password: string } = req.body;
+    const validationResult = UserLoginSchema.safeParse({ name, password });
+    
+    if (validationResult.error instanceof ZodError) {
+        res.status(400).json(validationResult.error);
+        return;
+    }
+
     const user = await findUserByName(name);
 
     if (user === null) {
