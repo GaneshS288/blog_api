@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "NODE_ENV=production tsx src/index.ts",
     "prod": "NODE_ENV=production node dist/index.js",
-    "test:unit": "NODE_ENV=test vitest src/tests"
+    "test:unit": "NODE_ENV=test vitest src/tests",
+    "test:integration": "NODE_ENV=test vitest src/integration_tests --fileParallelism=false"
   },
   "repository": {
     "type": "git",
