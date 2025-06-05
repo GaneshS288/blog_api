@@ -6,28 +6,17 @@ import { createUser, findUserByName } from "../db/userQueries.ts";
 import { UserSignupSchema, UserLoginSchema } from "../validation/userSchema.ts";
 
 async function signupUser(req: Request, res: Response) {
-    const {
-        name,
-        password,
-        passwordConfirm,
-        secretPassword,
-    }: {
-        name: string;
-        password: string;
-        passwordConfirm: string;
-        secretPassword: string;
-    } = req.body;
+    const validationResult = UserSignupSchema.safeParse(req.body);
 
-    const validationResult = UserSignupSchema.safeParse({
-        name,
-        password,
-        passwordConfirm,
-    });
-
-    if (validationResult.error instanceof ZodError) {
+    if (
+        validationResult.error instanceof ZodError ||
+        validationResult.data === undefined
+    ) {
         res.status(400).json(validationResult.error);
         return;
     }
+
+    const { name, password, secretPassword } = validationResult.data;
 
     const userExists = await findUserByName(name);
 
@@ -49,13 +38,17 @@ async function signupUser(req: Request, res: Response) {
 }
 
 async function loginUser(req: Request, res: Response) {
-    const { name, password }: { name: string; password: string } = req.body;
-    const validationResult = UserLoginSchema.safeParse({ name, password });
-    
-    if (validationResult.error instanceof ZodError) {
+    const validationResult = UserLoginSchema.safeParse(req.body);
+
+    if (
+        validationResult.error instanceof ZodError ||
+        validationResult.data === undefined
+    ) {
         res.status(400).json(validationResult.error);
         return;
     }
+
+    const { name, password } = validationResult.data;
 
     const user = await findUserByName(name);
 
