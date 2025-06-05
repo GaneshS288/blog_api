@@ -18,7 +18,6 @@ const UserSignupSchema = z
             .min(4, errorMessages.nameTooShort),
         password: z
             .string()
-            .trim()
             .nonempty(errorMessages.passwordEmpty)
             .min(8, errorMessages.passwordTooShort),
         passwordConfirm: z.string().nonempty().min(8),
@@ -45,7 +44,6 @@ const UserLoginSchema = z
             .min(4, errorMessages.nameTooShort),
         password: z
             .string()
-            .trim()
             .nonempty(errorMessages.passwordEmpty)
             .min(8, errorMessages.passwordTooShort),
     })
