@@ -60,7 +60,8 @@ async function loginUser(req: Request, res: Response) {
     if (user === null) {
         res.status(400).json({
             status: 400,
-            data: { error: "user doesn't exist" },
+            validationErrors: { name: "user doesn't exist" },
+            data: {},
         });
         return;
     }
@@ -79,7 +80,8 @@ async function loginUser(req: Request, res: Response) {
 
     res.status(200).json({
         status: 200,
-        data: { message: "Successfully logged in", token },
+        data: { message: "successfully logged in" },
+        token,
     });
 }
 

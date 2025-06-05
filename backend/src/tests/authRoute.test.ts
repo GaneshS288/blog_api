@@ -96,7 +96,7 @@ describe("logging in a user", () => {
 
         expect(res.status).toHaveBeenCalledWith(200);
         expect(mockedJson.mock.lastCall?.[0].data.message).toBe(
-            "Successfully logged in"
+            "successfully logged in"
         );
     });
 });

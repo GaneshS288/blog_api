@@ -6,7 +6,6 @@ import app from "../app.ts";
 import prisma from "../db/prisma.ts";
 import { dummyExistingUsers, dummyNewUser } from "./integrationTestUtils.ts";
 
-
 beforeEach(async () => {
     await prisma.users.deleteMany();
     const users = dummyExistingUsers.map((user) => {
@@ -37,6 +36,32 @@ describe("Signup a user", () => {
             .expect(400)
             .expect("Content-Type", /application\/json/);
 
-            expect(res.body.validationErrors.name).toBe("this username already exists")
+        expect(res.body.validationErrors.name).toBe(
+            "this username already exists"
+        );
+    });
+});
+
+describe("logging in a user", () => {
+    test("successfully logs in", async () => {
+        const user = dummyExistingUsers[0];
+        const res = await request(app)
+            .post("/auth/login")
+            .send({ name: user.name, password: user.password })
+            .expect(200)
+            .expect("Content-Type", /application\/json/);
+
+        expect(res.body.data.message).toBe("successfully logged in");
+    });
+
+    test("login fails if user doesn't exist", async () => {
+        const user = dummyNewUser;
+        const res = await request(app)
+            .post("/auth/login")
+            .send({ name: user.name, password: user.password })
+            .expect(400)
+            .expect("Content-Type", /application\/json/);
+
+        expect(res.body.validationErrors.name).toBe("user doesn't exist");
     });
 });
