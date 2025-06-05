@@ -9,11 +9,8 @@ import { UserSignupSchema, UserLoginSchema } from "../validation/userSchema.ts";
 async function signupUser(req: Request, res: Response) {
     const validationResult = UserSignupSchema.safeParse(req.body);
 
-    if (validationResult.error instanceof ZodError) {
+    if (validationResult.success === false) {
         res.status(400).json(validationResult.error);
-        return;
-    } else if (validationResult.data === undefined) {
-        res.status(400).json({ status: 400, error: "data couldn't be parsed" });
         return;
     }
 
@@ -45,11 +42,8 @@ async function signupUser(req: Request, res: Response) {
 async function loginUser(req: Request, res: Response) {
     const validationResult = UserLoginSchema.safeParse(req.body);
 
-    if (validationResult.error instanceof ZodError) {
+    if (validationResult.success === false) {
         res.status(400).json(validationResult.error);
-        return;
-    } else if (validationResult.data === undefined) {
-        res.status(400).json({ status: 400, error: "data couldn't be parsed" });
         return;
     }
 
