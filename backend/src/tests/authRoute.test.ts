@@ -42,7 +42,11 @@ vi.mock("bcryptjs", async () => {
 
 describe("signup a new user", () => {
     test("succesfully signs up a user and return 201 status", async () => {
-        const user = { name: "ganesh", password: "blabbityy@345", passwordConfirm: "blabbityy@345" };
+        const user = {
+            name: "ganesh",
+            password: "blabbityy@345",
+            passwordConfirm: "blabbityy@345",
+        };
         const req = createRequest({ method: "POST", body: user });
         const res = createResponse();
         vi.spyOn(res, "status");
@@ -59,7 +63,11 @@ describe("signup a new user", () => {
     });
 
     test("sends 400 error when a user with same name exist in database", async () => {
-        const user = { name: "martin", password: "stall$3000", passwordConfirm: "stall$3000" };
+        const user = {
+            name: "martin",
+            password: "stall$3000",
+            passwordConfirm: "stall$3000",
+        };
         const req = createRequest({ method: "POST", body: user });
         const res = createResponse();
         vi.spyOn(res, "status");
@@ -70,7 +78,8 @@ describe("signup a new user", () => {
         expect(res.status).toHaveBeenCalledWith(400);
         expect(res.json).toHaveBeenCalledWith({
             status: 400,
-            data: { error: `A user with name '${user.name}' already exists` },
+            validationErrors: { name: "this username already exists" },
+            data: {}
         });
     });
 });
@@ -86,6 +95,8 @@ describe("logging in a user", () => {
         await loginUser(req, res);
 
         expect(res.status).toHaveBeenCalledWith(200);
-        expect(mockedJson.mock.lastCall?.[0].data.message).toBe("Successfully logged in")
+        expect(mockedJson.mock.lastCall?.[0].data.message).toBe(
+            "Successfully logged in"
+        );
     });
 });

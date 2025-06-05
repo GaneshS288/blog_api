@@ -30,10 +30,13 @@ describe("Signup a user", () => {
     });
 
     test("returns 400 if the user already exists with appropriete error message", async () => {
+        const user = dummyExistingUsers[0];
         const res = await request(app)
             .post("/auth/signup")
-            .send(dummyExistingUsers[0])
+            .send(user)
             .expect(400)
             .expect("Content-Type", /application\/json/);
+
+            expect(res.body.validationErrors.name).toBe("this username already exists")
     });
 });

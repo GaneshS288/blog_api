@@ -23,8 +23,12 @@ async function signupUser(req: Request, res: Response) {
 
     if (userExists) {
         const status = 400;
-        const errMessage = `A user with name '${name}' already exists`;
-        res.status(400).json({ status, data: { error: errMessage } });
+        const errMessage = "this username already exists";
+        res.status(400).json({
+            status,
+            data: {},
+            validationErrors: { name: errMessage },
+        });
         return;
     }
 
