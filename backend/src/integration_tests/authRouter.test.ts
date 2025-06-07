@@ -60,6 +60,21 @@ describe("Signup a user", () => {
             "password must be at least 8 characters long"
         );
     });
+
+    test("returns 400 if passwords don't match", async () => {
+        const user = dummyNewUser;
+        dummyNewUser.passwordConfirm = "hello";
+
+        const res = await request(app)
+            .post("/auth/signup")
+            .send(user)
+            .expect(400)
+            .expect("Content-Type", /application\/json/);
+
+        expect(res.body.validationErrors.passwordConfirm).toBe(
+            "password doesn't match"
+        );
+    });
 });
 
 describe("logging in a user", () => {
