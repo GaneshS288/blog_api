@@ -20,7 +20,7 @@ const UserSignupSchema = z
             .string()
             .nonempty(errorMessages.passwordEmpty)
             .min(8, errorMessages.passwordTooShort),
-        passwordConfirm: z.string().nonempty().min(8),
+        passwordConfirm: z.string().nonempty(),
         secretPassword: z.string().optional(),
     })
     .refine((data) => data.password === data.passwordConfirm, {
