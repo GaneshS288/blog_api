@@ -1,16 +1,25 @@
 import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { ZodError } from "zod/v4";
+import { z } from "zod/v4";
 import { SALT_ROUNDS } from "../envConfig.ts";
 import { createUser, findUserByName } from "../db/userQueries.ts";
 import { UserSignupSchema, UserLoginSchema } from "../validation/userSchema.ts";
+import { flattenError } from "../validation/validationUtils.ts";
 
 async function signupUser(req: Request, res: Response) {
     const validationResult = UserSignupSchema.safeParse(req.body);
 
     if (validationResult.success === false) {
-        res.status(400).json(validationResult.error);
+        const errors = flattenError(validationResult.error);
+
+        const responseData = {
+            status: 400,
+            validationErrors: errors,
+            data: {},
+        };
+
+        res.status(400).json(responseData);
         return;
     }
 

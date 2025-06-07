@@ -40,6 +40,26 @@ describe("Signup a user", () => {
             "this username already exists"
         );
     });
+
+    test("returns 400 with error message if name or password length is short", async () => {
+        const user = {
+            name: "gan",
+            password: "babwde",
+            passwordConfirm: "babwde",
+        };
+        const res = await request(app)
+            .post("/auth/signup")
+            .send(user)
+            .expect(400)
+            .expect("Content-Type", /application\/json/);
+
+        expect(res.body.validationErrors.name).toBe(
+            "name must be at least 4 characters long"
+        );
+        expect(res.body.validationErrors.password).toBe(
+            "password must be at least 8 characters long"
+        );
+    });
 });
 
 describe("logging in a user", () => {
