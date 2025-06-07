@@ -52,7 +52,15 @@ async function loginUser(req: Request, res: Response) {
     const validationResult = UserLoginSchema.safeParse(req.body);
 
     if (validationResult.success === false) {
-        res.status(400).json(validationResult.error);
+        const errors = flattenError(validationResult.error);
+
+        const responseData = {
+            status: 400,
+            validationErrors: errors,
+            data: {},
+        };
+
+        res.status(400).json(responseData);
         return;
     }
 
