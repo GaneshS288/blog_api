@@ -99,4 +99,15 @@ describe("logging in a user", () => {
 
         expect(res.body.validationErrors.name).toBe("user doesn't exist");
     });
+
+    test("login fails if password is incorrect", async () => {
+        const user = dummyExistingUsers[0];
+        const res = await request(app)
+            .post("/auth/login")
+            .send({ name: user.name, password: "aaaaaaaaaaaaaa" })
+            .expect(400)
+            .expect("Content-Type", /application\/json/);
+
+        expect(res.body.validationErrors.password).toBe("password is incorrect");
+    })
 });
