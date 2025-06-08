@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { z } from "zod/v4";
@@ -6,20 +6,15 @@ import { SALT_ROUNDS } from "../envConfig.ts";
 import { createUser, findUserByName } from "../db/userQueries.ts";
 import { UserSignupSchema, UserLoginSchema } from "../validation/userSchema.ts";
 import { flattenError } from "../validation/validationUtils.ts";
+import ApiError from "../errors/apiError.ts";
 
-async function signupUser(req: Request, res: Response) {
+async function signupUser(req: Request, res: Response, next: NextFunction) {
     const validationResult = UserSignupSchema.safeParse(req.body);
 
     if (validationResult.success === false) {
-        const errors = flattenError(validationResult.error);
-
-        const responseData = {
-            status: 400,
-            validationErrors: errors,
-            data: {},
-        };
-
-        res.status(400).json(responseData);
+        const validationErrors = flattenError(validationResult.error);
+        const apiError = new ApiError(400, [], null, validationErrors);
+        next(apiError);
         return;
     }
 
@@ -28,13 +23,9 @@ async function signupUser(req: Request, res: Response) {
     const userExists = await findUserByName(name);
 
     if (userExists) {
-        const status = 400;
-        const errMessage = "this username already exists";
-        res.status(400).json({
-            status,
-            data: {},
-            validationErrors: { name: errMessage },
-        });
+        const validationErrors = { name: "this username already exists" };
+        const apiError = new ApiError(400, [], null, validationErrors);
+        next(apiError);
         return;
     }
 
@@ -48,19 +39,13 @@ async function signupUser(req: Request, res: Response) {
     });
 }
 
-async function loginUser(req: Request, res: Response) {
+async function loginUser(req: Request, res: Response, next: NextFunction) {
     const validationResult = UserLoginSchema.safeParse(req.body);
 
     if (validationResult.success === false) {
-        const errors = flattenError(validationResult.error);
-
-        const responseData = {
-            status: 400,
-            validationErrors: errors,
-            data: {},
-        };
-
-        res.status(400).json(responseData);
+        const validationErrors = flattenError(validationResult.error);
+        const apiError = new ApiError(400, [], null, validationErrors);
+        next(apiError);
         return;
     }
 
@@ -69,21 +54,18 @@ async function loginUser(req: Request, res: Response) {
     const user = await findUserByName(name);
 
     if (user === null) {
-        res.status(400).json({
-            status: 400,
-            validationErrors: { name: "user doesn't exist" },
-            data: {},
-        });
+        const validationErrors = { name: "user doesn't exist" };
+        const apiError = new ApiError(400, [], null, validationErrors);
+        next(apiError);
         return;
     }
 
     const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
 
     if (!passwordCorrect) {
-        res.status(400).json({
-            status: 400,
-            data: { error: "password is incorrect" },
-        });
+        const validationErrors = { password: "password is incorrect" };
+        const apiError = new ApiError(400, [], null, validationErrors);
+        next(apiError);
         return;
     }
 
