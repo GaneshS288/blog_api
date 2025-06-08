@@ -1,24 +1,31 @@
 import "dotenv/config";
 
-const DATABASE_URL =
-    process.env.NODE_ENV === "test"
-        ? process.env.TEST_DATABASE_URL
-        : process.env.DATABASE_URL;
-
-if (DATABASE_URL === undefined) {
-    throw new Error("Database URL not provided");
+/**
+ * This function checks if the given enviroment variable is empty string, '0' or falsy.
+ * If the above conditions are met an error will be thrown with message specifying enviroment variable's name
+ * @param envVar the enviroment variable to check
+ * @param envVarName name of enviroment variable
+ */
+function assertEnvVar(envVar: string | number, envVarName: string) {
+    const errMessage = `${envVarName} enviroment varibale not provided`;
+    if (typeof envVar === "string" && envVar.trim() === "")
+        throw new Error(errMessage);
+    else if (envVar === 0 || Number.isNaN(envVar)) throw new Error(errMessage);
+    else if (!envVar) throw new Error(errMessage);
 }
 
-const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
+const DATABASE_URL =
+    (process.env.NODE_ENV === "test"
+        ? process.env.TEST_DATABASE_URL
+        : process.env.DATABASE_URL) ?? "";
 
-if (!SALT_ROUNDS) throw new Error("salt rounds not specified for bcrypt");
+const SALT_ROUNDS = Number(process.env.SALT_ROUNDS ?? "0");
+const JWT_SECRET = process.env.JWT_SECRET ?? "";
+const SECRET_PASSWORD = process.env.SECRET_PASSWORD ?? "";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if(!JWT_SECRET) throw new Error("JWT secret not provided");
-
- const SECRET_PASSWORD = process.env.SECRET_PASSWORD;
-
- if(!SECRET_PASSWORD) throw new Error("SECRET_PASSWORD not provided");
+assertEnvVar(DATABASE_URL, "DATABASE_URL");
+assertEnvVar(SALT_ROUNDS, "SALT_ROUNDS");
+assertEnvVar(JWT_SECRET, "JWT_SECRET");
+assertEnvVar(SECRET_PASSWORD, "SECRET_PASSWORD");
 
 export { DATABASE_URL, SALT_ROUNDS, JWT_SECRET, SECRET_PASSWORD };

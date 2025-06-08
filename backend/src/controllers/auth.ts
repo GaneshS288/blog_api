@@ -70,7 +70,7 @@ async function loginUser(req: Request, res: Response, next: NextFunction) {
         return;
     }
 
-    const token = jwt.sign({ id: user.remote_id, name: user.name }, JWT_SECRET as string);
+    const token = jwt.sign({ id: user.remote_id, name: user.name }, JWT_SECRET);
 
     res.status(200).json({
         status: 200,
