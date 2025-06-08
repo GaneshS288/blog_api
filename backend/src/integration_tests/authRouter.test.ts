@@ -1,7 +1,7 @@
 import { describe, test, beforeEach, expect } from "vitest";
 import request from "supertest";
 import bcrypt from "bcryptjs";
-import { SALT_ROUNDS } from "../envConfig.ts";
+import { SALT_ROUNDS, SECRET_PASSWORD } from "../envConfig.ts";
 import app from "../app.ts";
 import prisma from "../db/prisma.ts";
 import { dummyExistingUsers, dummyNewUser } from "./integrationTestUtils.ts";
@@ -26,6 +26,17 @@ describe("Signup a user", () => {
             .expect("Content-Type", /application\/json/);
 
         expect(res.body.data.message).toBe("user successfully created");
+    });
+
+    test("signs up admin user if correct secret password is provided", async () => {
+        const user = { ...dummyNewUser, secretPassword: SECRET_PASSWORD };
+        const res = await request(app)
+            .post("/auth/signup")
+            .send(user)
+            .expect(201)
+            .expect("Content-Type", /application\/json/);
+
+        expect(res.body.data.message).toBe("admin user successfully created");
     });
 
     test("returns 400 if the user already exists with appropriete error message", async () => {
@@ -108,6 +119,8 @@ describe("logging in a user", () => {
             .expect(400)
             .expect("Content-Type", /application\/json/);
 
-        expect(res.body.validationErrors.password).toBe("password is incorrect");
-    })
+        expect(res.body.validationErrors.password).toBe(
+            "password is incorrect"
+        );
+    });
 });

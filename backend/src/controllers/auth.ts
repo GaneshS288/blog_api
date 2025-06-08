@@ -1,8 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { z } from "zod/v4";
-import { SALT_ROUNDS } from "../envConfig.ts";
+import { JWT_SECRET, SALT_ROUNDS, SECRET_PASSWORD } from "../envConfig.ts";
 import { createUser, findUserByName } from "../db/userQueries.ts";
 import { UserSignupSchema, UserLoginSchema } from "../validation/userSchema.ts";
 import { flattenError } from "../validation/validationUtils.ts";
@@ -30,12 +29,14 @@ async function signupUser(req: Request, res: Response, next: NextFunction) {
     }
 
     const passwordhash = await bcrypt.hash(password, SALT_ROUNDS);
+    const isAdmin = SECRET_PASSWORD === secretPassword ? true : false;
+    const successMessage = isAdmin ? "admin user successfully created" : "user successfully created"
 
-    await createUser(name, passwordhash);
+    await createUser(name, passwordhash, isAdmin);
 
     res.status(201).json({
         status: 201,
-        data: { message: "user successfully created" },
+        data: { message: successMessage },
     });
 }
 
@@ -69,7 +70,7 @@ async function loginUser(req: Request, res: Response, next: NextFunction) {
         return;
     }
 
-    const token = jwt.sign({ id: user.remote_id, name: user.name }, "cats");
+    const token = jwt.sign({ id: user.remote_id, name: user.name }, JWT_SECRET as string);
 
     res.status(200).json({
         status: 200,
