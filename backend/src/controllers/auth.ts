@@ -1,4 +1,4 @@
-import type { NextFunction, Request, Response } from "express";
+import type { Request, Response } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET, SALT_ROUNDS, SECRET_PASSWORD } from "../envConfig.ts";
@@ -7,14 +7,12 @@ import { UserSignupSchema, UserLoginSchema } from "../validation/userSchema.ts";
 import { flattenError } from "../validation/validationUtils.ts";
 import ApiError from "../errors/apiError.ts";
 
-async function signupUser(req: Request, res: Response, next: NextFunction) {
+async function signupUser(req: Request, res: Response) {
     const validationResult = UserSignupSchema.safeParse(req.body);
 
     if (validationResult.success === false) {
         const validationErrors = flattenError(validationResult.error);
-        const apiError = new ApiError(400, [], null, validationErrors);
-        next(apiError);
-        return;
+        throw new ApiError(400, [], null, validationErrors);
     }
 
     const { name, password, secretPassword } = validationResult.data;
@@ -23,14 +21,14 @@ async function signupUser(req: Request, res: Response, next: NextFunction) {
 
     if (userExists) {
         const validationErrors = { name: "this username already exists" };
-        const apiError = new ApiError(400, [], null, validationErrors);
-        next(apiError);
-        return;
+        throw new ApiError(400, [], null, validationErrors);
     }
 
     const passwordhash = await bcrypt.hash(password, SALT_ROUNDS);
     const isAdmin = SECRET_PASSWORD === secretPassword ? true : false;
-    const successMessage = isAdmin ? "admin user successfully created" : "user successfully created"
+    const successMessage = isAdmin
+        ? "admin user successfully created"
+        : "user successfully created";
 
     await createUser(name, passwordhash, isAdmin);
 
@@ -40,14 +38,12 @@ async function signupUser(req: Request, res: Response, next: NextFunction) {
     });
 }
 
-async function loginUser(req: Request, res: Response, next: NextFunction) {
+async function loginUser(req: Request, res: Response) {
     const validationResult = UserLoginSchema.safeParse(req.body);
 
     if (validationResult.success === false) {
         const validationErrors = flattenError(validationResult.error);
-        const apiError = new ApiError(400, [], null, validationErrors);
-        next(apiError);
-        return;
+        throw new ApiError(400, [], null, validationErrors);
     }
 
     const { name, password } = validationResult.data;
@@ -56,18 +52,14 @@ async function loginUser(req: Request, res: Response, next: NextFunction) {
 
     if (user === null) {
         const validationErrors = { name: "user doesn't exist" };
-        const apiError = new ApiError(400, [], null, validationErrors);
-        next(apiError);
-        return;
+        throw new ApiError(400, [], null, validationErrors);
     }
 
     const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
 
     if (!passwordCorrect) {
         const validationErrors = { password: "password is incorrect" };
-        const apiError = new ApiError(400, [], null, validationErrors);
-        next(apiError);
-        return;
+        throw new ApiError(400, [], null, validationErrors);
     }
 
     const token = jwt.sign({ id: user.remote_id, name: user.name }, JWT_SECRET);
