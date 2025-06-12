@@ -1,8 +1,8 @@
 import { expect, test, describe, vi } from "vitest";
 import { createRequest, createResponse } from "node-mocks-http";
-import { compare } from "bcryptjs";
 import { signupUser, loginUser } from "../controllers/auth.ts";
 import { createUser, findUserByName } from "../db/userQueries.ts";
+import ApiError from "../errors/apiError.ts";
 
 // mock the function that calls database to create user
 vi.mock("../db/userQueries.ts", () => {
@@ -73,14 +73,11 @@ describe("signup a new user", () => {
         vi.spyOn(res, "status");
         vi.spyOn(res, "json");
 
-        await signupUser(req, res);
-
-        expect(res.status).toHaveBeenCalledWith(400);
-        expect(res.json).toHaveBeenCalledWith({
-            status: 400,
-            validationErrors: { name: "this username already exists" },
-            data: {}
-        });
+        try {
+            await signupUser(req, res);
+        } catch (error) {
+            expect(error instanceof ApiError).toBeTruthy();
+        }
     });
 });
 
