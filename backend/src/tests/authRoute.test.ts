@@ -1,7 +1,7 @@
 import { expect, test, describe, vi } from "vitest";
 import { createRequest, createResponse } from "node-mocks-http";
 import { signupUser, loginUser } from "../controllers/auth.ts";
-import { createUser, findUserByName } from "../db/userQueries.ts";
+import { createUser } from "../db/userQueries.ts";
 import ApiError from "../errors/apiError.ts";
 
 // mock the function that calls database to create user
