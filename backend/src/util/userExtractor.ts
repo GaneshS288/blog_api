@@ -35,7 +35,7 @@ async function userExtractor(req: Request, res: Response, next: NextFunction) {
         const tokenData = tokenExtractor(authHeader);
 
         if (typeof tokenData === "object" && tokenData.id !== null) {
-            const user = findUserById(tokenData.id);
+            const user = await findUserById(tokenData.id);
 
             if (user === null) throw new Error("user not found");
 
