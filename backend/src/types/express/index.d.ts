@@ -1,5 +1,5 @@
 declare namespace Express {
     export interface Request {
-        user: object | undefined;
+        user: { [key: string]: unknown } | undefined;
     }
 }
