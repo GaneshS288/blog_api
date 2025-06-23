@@ -7,7 +7,7 @@ type blogData = {
     published?: boolean;
 };
 
-function createBlog({ title, content, author_id, published = false }: blogData) {
+async function createBlog({ title, content, author_id, published = false }: blogData) {
     const blog = await prisma.blogs.create({
         data: {
             title: title,
