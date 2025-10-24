@@ -11,9 +11,10 @@ const BlogPostSchema = z
     .object({
         title: z
             .string()
+            .trim()
             .nonempty(errors.titleEmpty)
             .max(100, errors.titleTooLong),
-        content: z.string().nonempty(errors.contentEmpty),
+        content: z.string().trim().nonempty(errors.contentEmpty),
         author_id: z.number(),
         published: z.boolean().default(false),
     })
