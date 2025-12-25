@@ -1,5 +1,4 @@
 import { z } from "zod/v4";
-import { escapeHtml } from "./validationUtils.ts";
 
 const errorMessages = {
     nameEmpty: "name cannot be empty",
@@ -26,13 +25,6 @@ const UserSignupSchema = z
     .refine((data) => data.password === data.passwordConfirm, {
         message: errorMessages.passwordMatchFail,
         path: ["passwordConfirm"],
-    })
-    .transform((data) => {
-        return {
-            name: escapeHtml(data.name),
-            password: data.password,
-            secretPassword: data.secretPassword,
-        };
     });
 
 const UserLoginSchema = z
@@ -46,12 +38,6 @@ const UserLoginSchema = z
             .string()
             .nonempty(errorMessages.passwordEmpty)
             .min(8, errorMessages.passwordTooShort),
-    })
-    .transform((data) => {
-        return {
-            name: escapeHtml(data.name),
-            password: data.password,
-        };
     });
 
 export { UserLoginSchema, UserSignupSchema };
