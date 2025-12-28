@@ -27,17 +27,16 @@ const UserSignupSchema = z
         path: ["passwordConfirm"],
     });
 
-const UserLoginSchema = z
-    .object({
-        name: z
-            .string()
-            .nonempty(errorMessages.nameEmpty)
-            .trim()
-            .min(4, errorMessages.nameTooShort),
-        password: z
-            .string()
-            .nonempty(errorMessages.passwordEmpty)
-            .min(8, errorMessages.passwordTooShort),
-    });
+const UserLoginSchema = z.object({
+    name: z
+        .string()
+        .nonempty(errorMessages.nameEmpty)
+        .trim()
+        .min(4, errorMessages.nameTooShort),
+    password: z
+        .string()
+        .nonempty(errorMessages.passwordEmpty)
+        .min(8, errorMessages.passwordTooShort),
+});
 
 export { UserLoginSchema, UserSignupSchema };

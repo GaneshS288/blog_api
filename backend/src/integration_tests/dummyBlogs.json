@@ -1,0 +1,52 @@
+[
+    {
+        "title": "how to stay healthy",
+        "content": "eat an apple everyday",
+        "published": true
+    },
+    {
+        "title": "it's freaking cold here",
+        "content": "almost 6 C!",
+        "published": true
+    },
+    {
+        "title": "far cry 1 sucks",
+        "content": "there are too many aimbots",
+        "published": true
+    },
+    {
+        "title": "i do not like python",
+        "content": "because it has identation as part of syntax",
+        "published": true
+    },
+    {
+        "title": "bioshock infinite is boring",
+        "content": "very convoluted story and bad gameplay",
+        "published": true
+    },
+    {
+        "title": "nine sols is okay",
+        "content": "good bosses but generally mediocre metroidvania",
+        "published": true
+    },
+    {
+        "title": "running is good",
+        "content": "cardio is good what else can i say",
+        "published": true
+    },
+    {
+        "title": "use abortsignal in fetch api",
+        "content": "better than ignoring fetch result",
+        "published": true
+    },
+    {
+        "title": "india gate is where?",
+        "content": "in delhi you dum dum",
+        "published": false
+    },
+    {
+        "title": "how many days in a week",
+        "content": "i dunno ask chatgpt",
+        "published": false
+    }
+]

@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
-import { createBlog } from "../db/blogQueries.ts";
-import { BlogPostSchema } from "../validation/blogSchema.ts";
+import { createBlog, fetchPublishedBlogs } from "../db/blogQueries.ts";
+import {
+    BlogGetQueryParamsSchema,
+    BlogPostSchema,
+} from "../validation/blogSchema.ts";
 import { flattenError } from "../validation/validationUtils.ts";
 import ApiError from "../errors/apiError.ts";
 
@@ -27,4 +30,23 @@ async function postBlog(req: Request, res: Response) {
     }
 }
 
-export { postBlog }
+async function getPublishedBlogs(req: Request, res: Response) {
+    const { author_id, order, page, result_count } = req.query;
+    const validationResult = BlogGetQueryParamsSchema.safeParse({
+        author_id,
+        order,
+        page,
+        result_count,
+    });
+
+    if (validationResult.success === false) {
+        const validationErrors = flattenError(validationResult.error);
+        throw new ApiError(400, [], null, validationErrors);
+    }
+
+    const blogs = await fetchPublishedBlogs({ ...validationResult.data });
+
+    res.status(200).json({ data: blogs });
+}
+
+export { postBlog, getPublishedBlogs };

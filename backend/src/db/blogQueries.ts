@@ -7,7 +7,64 @@ type blogData = {
     published?: boolean;
 };
 
-async function createBlog({ title, content, author_id, published = false }: blogData) {
+type blogQueryParams = {
+    order: "asc" | "desc";
+    author_id?: string;
+    page: number;
+    result_count: number;
+};
+
+async function fetchPublishedBlogs({
+    order = "desc",
+    author_id = undefined,
+    result_count,
+    page,
+}: blogQueryParams) {
+    const filterOptions = {
+        where: {
+            author: {
+                remote_id: author_id,
+            },
+            published: true,
+        },
+        orderBy: {
+            created_at: order,
+        },
+    };
+
+    const blogs = prisma.blogs.findMany({
+        omit: {
+            id: true,
+            author_id: true,
+        },
+        include: {
+            author: {
+                select: {
+                    remote_id: true,
+                    name: true,
+                },
+            },
+        },
+        skip: (page - 1) * result_count,
+        take: result_count,
+        ...filterOptions,
+    });
+
+    const totalBlogCount = prisma.blogs.count({
+        where: filterOptions.where,
+    });
+
+    const [returnedBlogs, count] = await Promise.all([blogs, totalBlogCount]);
+
+    return { blogs: returnedBlogs, count };
+}
+
+async function createBlog({
+    title,
+    content,
+    author_id,
+    published = false,
+}: blogData) {
     const blog = await prisma.blogs.create({
         data: {
             title: title,
@@ -20,4 +77,4 @@ async function createBlog({ title, content, author_id, published = false }: blog
     return blog;
 }
 
-export { createBlog };
+export { createBlog, fetchPublishedBlogs };

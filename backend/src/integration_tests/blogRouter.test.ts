@@ -1,21 +1,11 @@
 import { describe, test, beforeEach, expect } from "vitest";
 import request from "supertest";
-import bcrypt from "bcryptjs";
-import { SALT_ROUNDS, SECRET_PASSWORD } from "../envConfig.ts";
 import app from "../app.ts";
-import prisma from "../db/prisma.ts";
-import { dummyExistingUsers, dummyNewUser } from "./integrationTestUtils.ts";
+
+import { dummyExistingUsers, testSetup } from "./integrationTestUtils.ts";
 
 beforeEach(async () => {
-    await prisma.users.deleteMany();
-    await prisma.blogs.deleteMany();
-    const users = dummyExistingUsers.map((user) => {
-        return {
-            name: user.name,
-            passwordHash: bcrypt.hashSync(user.password, SALT_ROUNDS),
-        };
-    });
-    await prisma.users.createMany({ data: users });
+    await testSetup();
 });
 
 describe("creating a new blog", () => {
@@ -34,7 +24,7 @@ describe("creating a new blog", () => {
         const token = loginRes.body.token;
 
         await api
-            .post("/blogs")
+            .post("/blog")
             .set({ authorization: `Bearer ${token}` })
             .send({ title: "heelo", content: "hi baby", published: true })
             .expect(201);
@@ -55,7 +45,7 @@ describe("creating a new blog", () => {
         const token = loginRes.body.token;
 
         const res = await api
-            .post("/blogs")
+            .post("/blog")
             .set({ authorization: `Bearer ${token}` })
             .send({ title: "  ", content: "   ", published: true })
             .expect(400);
@@ -70,9 +60,35 @@ describe("creating a new blog", () => {
         const api = request(app);
 
         await api
-            .post("/blogs")
+            .post("/blog")
             .set({ authorization: `Bearer wdwd2313dadaz41131` })
             .send({ title: "heelo", content: "hi baby", published: true })
-            .expect(401);     
-    })
+            .expect(401);
+    });
+});
+
+describe("returning blogs from the api", () => {
+    test("returns blogs specified in result_count param", async () => {
+        const api = request(app);
+
+        const res = await api
+            .get("/blogs")
+            .query({ order: "desc", page: 1, result_count: 6 })
+            .expect(200);
+        expect(res.body.data.blogs.length).toBe(6);
+        expect(res.body.data.count).toBe(8);
+        console.log(res.body.data.blogs);
+    });
+
+    test("pagination works properly", async () => {
+        const api = request(app);
+
+        const res = await api
+            .get("/blogs")
+            .query({ order: "desc", page: 2, result_count: 5 })
+            .expect(200);
+        expect(res.body.data.blogs.length).toBe(3);
+        expect(res.body.data.count).toBe(8);
+        console.log(res.body.data.blogs);
+    });
 });
