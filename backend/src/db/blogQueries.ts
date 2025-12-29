@@ -100,6 +100,10 @@ async function createBlog({
             author_id: author_id,
             published: published,
         },
+        omit: {
+            id: true,
+            author_id: true
+        }
     });
 
     return blog;

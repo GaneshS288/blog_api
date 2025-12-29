@@ -31,7 +31,7 @@ async function postBlog(req: Request, res: Response) {
 
         const createdBlog = await createBlog(validationResult.data);
 
-        res.status(201).json({ data: [createdBlog] });
+        res.status(201).json({ data: createdBlog });
     }
 }
 

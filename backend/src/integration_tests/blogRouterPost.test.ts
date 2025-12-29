@@ -9,7 +9,7 @@ beforeEach(async () => {
 });
 
 describe("creating a new blog", () => {
-    test("successfullt creates a new blog", async () => {
+    test("successfully creates a new blog", async () => {
         const userDetails = {
             name: dummyExistingUsers[0].name,
             password: dummyExistingUsers[0].password,
@@ -23,11 +23,14 @@ describe("creating a new blog", () => {
 
         const token = loginRes.body.token;
 
-        await api
+        const postRes = await api
             .post("/blog")
             .set({ authorization: `Bearer ${token}` })
             .send({ title: "heelo", content: "hi baby", published: true })
             .expect(201);
+        
+        expect(postRes.body.data.title).toBe("heelo");
+        expect(postRes.body.data.content).toBe("hi baby");
     });
 
     test("sends error status if title or content is empty with appropriate messages", async () => {
