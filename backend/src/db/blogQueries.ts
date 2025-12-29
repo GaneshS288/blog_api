@@ -16,6 +16,28 @@ type blogQueryParams = {
     title?: string;
 };
 
+async function fetchPublishedSingleBlog(blogId: string) {
+    const blog = await prisma.blogs.findUnique({
+        omit: {
+            id: true,
+            author_id: true,
+        },
+        include: {
+            author: {
+                select: {
+                    remote_id: true,
+                    name: true,
+                },
+            },
+        },
+        where: {
+            remote_id: blogId,
+        },
+    });
+
+    return blog;
+}
+
 async function fetchPublishedBlogs({
     order = "desc",
     author_id = undefined,
@@ -83,4 +105,4 @@ async function createBlog({
     return blog;
 }
 
-export { createBlog, fetchPublishedBlogs };
+export { createBlog, fetchPublishedBlogs, fetchPublishedSingleBlog };

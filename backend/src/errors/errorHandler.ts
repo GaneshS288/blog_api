@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express"
 import ApiError from "./apiError.ts"
+import { NotFoundError } from "./notFoundError.ts";
 
 function errorHandler(err: unknown, req: Request, res: Response, next: NextFunction)  {
-    if(err instanceof ApiError)
+    if(err instanceof ApiError || err instanceof NotFoundError)
         res.status(err.status).json(err);
     else {
         const errMessage = "something unexpected happened on the server"

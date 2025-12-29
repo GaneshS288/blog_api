@@ -72,4 +72,30 @@ describe("returning blogs from the api", () => {
 
         expect(res.body.data.count).toBe(1);
     });
+
+    test("can fetch a single blog", async () => {
+        const api = request(app);
+        const res = await api
+            .get("/blogs")
+            .query({ order: "desc" })
+            .expect(200);
+
+        const fetchedBlog = res.body.data.blogs[0];
+
+        const singleBlogRes = await api
+            .get(`/blog/${fetchedBlog.remote_id}`)
+            .expect(200);
+
+        expect(singleBlogRes.body.data.title).toBe(fetchedBlog.title);
+    });
+
+    test("returns not found when blog id is wrong on single blog endpoint", async () => {
+        const api = request(app);
+        
+        const res = await api
+            .get(`/blog/uwdw232aabskwdw`)
+            .expect(404);
+
+        expect(res.body.errors[0]).toBe("blog not found");
+    })
 });
