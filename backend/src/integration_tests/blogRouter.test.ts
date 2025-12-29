@@ -68,12 +68,12 @@ describe("creating a new blog", () => {
 });
 
 describe("returning blogs from the api", () => {
-    test("returns blogs specified in result_count param", async () => {
+    test("returns blogs specified in size param", async () => {
         const api = request(app);
 
         const res = await api
             .get("/blogs")
-            .query({ order: "desc", page: 1, result_count: 6 })
+            .query({ order: "desc", page: 1, size: 6 })
             .expect(200);
         expect(res.body.data.blogs.length).toBe(6);
         expect(res.body.data.count).toBe(8);
@@ -85,7 +85,7 @@ describe("returning blogs from the api", () => {
 
         const res = await api
             .get("/blogs")
-            .query({ order: "desc", page: 2, result_count: 5 })
+            .query({ order: "desc", page: 2, size: 5 })
             .expect(200);
         expect(res.body.data.blogs.length).toBe(3);
         expect(res.body.data.count).toBe(8);

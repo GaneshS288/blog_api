@@ -11,13 +11,13 @@ type blogQueryParams = {
     order: "asc" | "desc";
     author_id?: string;
     page: number;
-    result_count: number;
+    size: number;
 };
 
 async function fetchPublishedBlogs({
     order = "desc",
     author_id = undefined,
-    result_count,
+    size,
     page,
 }: blogQueryParams) {
     const filterOptions = {
@@ -45,8 +45,8 @@ async function fetchPublishedBlogs({
                 },
             },
         },
-        skip: (page - 1) * result_count,
-        take: result_count,
+        skip: (page - 1) * size,
+        take: size,
         ...filterOptions,
     });
 

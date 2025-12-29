@@ -11,8 +11,8 @@ const postErrors = {
 const BlogGetQueryParamsSchema = z.object({
     order: z.enum(["asc", "desc"]),
     author_id: z.uuidv4().optional(),
-    page: z.coerce.number().min(1),
-    result_count: z.coerce.number().min(5).max(20),
+    page: z.coerce.number().min(1).default(1),
+    size: z.coerce.number().min(5).max(20).default(10),
 });
 
 const BlogPostSchema = z
