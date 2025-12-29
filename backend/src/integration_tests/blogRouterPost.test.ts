@@ -2,10 +2,10 @@ import { describe, test, beforeEach, expect } from "vitest";
 import request from "supertest";
 import app from "../app.ts";
 
-import { dummyExistingUsers, testSetup } from "./integrationTestUtils.ts";
+import { dummyExistingUsers, blogPostSetup } from "./integrationTestUtils.ts";
 
 beforeEach(async () => {
-    await testSetup();
+    await blogPostSetup();
 });
 
 describe("creating a new blog", () => {
@@ -64,31 +64,5 @@ describe("creating a new blog", () => {
             .set({ authorization: `Bearer wdwd2313dadaz41131` })
             .send({ title: "heelo", content: "hi baby", published: true })
             .expect(401);
-    });
-});
-
-describe("returning blogs from the api", () => {
-    test("returns blogs specified in size param", async () => {
-        const api = request(app);
-
-        const res = await api
-            .get("/blogs")
-            .query({ order: "desc", page: 1, size: 6 })
-            .expect(200);
-        expect(res.body.data.blogs.length).toBe(6);
-        expect(res.body.data.count).toBe(8);
-        console.log(res.body.data.blogs);
-    });
-
-    test("pagination works properly", async () => {
-        const api = request(app);
-
-        const res = await api
-            .get("/blogs")
-            .query({ order: "desc", page: 2, size: 5 })
-            .expect(200);
-        expect(res.body.data.blogs.length).toBe(3);
-        expect(res.body.data.count).toBe(8);
-        console.log(res.body.data.blogs);
     });
 });

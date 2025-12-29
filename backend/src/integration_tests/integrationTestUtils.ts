@@ -14,7 +14,7 @@ const dummyNewUser = {
     passwordConfirm: "ihatetheworldandmartin",
 };
 
-async function testSetup() {
+async function blogPostSetup() {
     await prisma.users.deleteMany();
     await prisma.blogs.deleteMany();
     const users = dummyExistingUsers.map((user) => {
@@ -24,15 +24,30 @@ async function testSetup() {
         };
     });
     await prisma.users.createMany({ data: users });
-    const user = await prisma.users.findFirstOrThrow({
-        where: {
-            name: dummyExistingUsers[0].name,
-        },
-    });
-
-    const dummyBlogs = blogJson.map((blog) => ({...blog, author_id: user.id}));
-
-    await prisma.blogs.createMany({data: dummyBlogs})
 }
 
-export { dummyExistingUsers, dummyNewUser, testSetup };
+async function blogGetSetup() {
+    await prisma.users.deleteMany();
+    await prisma.blogs.deleteMany();
+    const users = dummyExistingUsers.map((user) => {
+        return {
+            name: user.name,
+            passwordHash: bcrypt.hashSync(user.password, SALT_ROUNDS),
+        };
+    });
+    await prisma.users.createMany({ data: users });
+    const dbUsers = await prisma.users.findMany();
+    const userMartin = dbUsers.find((user) => user.name === "martin");
+    const userFuwante = dbUsers.find((user) => user.name === "fuwante");
+
+    const dummyBlogs = blogJson.map((blog) => ({
+        ...blog,
+        author_id: userMartin!.id,
+    }));
+    //change the first blog to have a different user id
+    dummyBlogs[0].author_id = userFuwante!.id;
+
+    await prisma.blogs.createMany({ data: dummyBlogs });
+}
+
+export { dummyExistingUsers, dummyNewUser, blogGetSetup, blogPostSetup };
