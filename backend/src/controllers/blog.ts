@@ -31,12 +31,14 @@ async function postBlog(req: Request, res: Response) {
 }
 
 async function getPublishedBlogs(req: Request, res: Response) {
-    const { author_id, order, page, size } = req.query;
+    const { author_id, order, page, size, name, title } = req.query;
     const validationResult = BlogGetQueryParamsSchema.safeParse({
         author_id,
         order,
         page,
         size,
+        name,
+        title,
     });
 
     if (validationResult.success === false) {

@@ -49,7 +49,27 @@ describe("returning blogs from the api", () => {
             .expect(200);
 
         expect(authorIdRes.body.data.count).toBe(1);
+    });
 
-        console.log(authorIdRes.body.data.blogs);
+    test("search by author name works", async () => {
+        const api = request(app);
+
+        const res = await api
+            .get("/blogs")
+            .query({ order: "desc", page: 1, name: "fuwante" })
+            .expect(200);
+
+        expect(res.body.data.count).toBe(1);
+    });
+
+    test("search by blog title works", async () => {
+        const api = request(app);
+        const blogTitle = "far cry 1 sucks";
+        const res = await api
+            .get("/blogs")
+            .query({ order: "desc", page: 1, title: blogTitle })
+            .expect(200);
+
+        expect(res.body.data.count).toBe(1);
     });
 });

@@ -12,6 +12,8 @@ type blogQueryParams = {
     author_id?: string;
     page: number;
     size: number;
+    name?: string;
+    title?: string;
 };
 
 async function fetchPublishedBlogs({
@@ -19,11 +21,15 @@ async function fetchPublishedBlogs({
     author_id = undefined,
     size,
     page,
+    name,
+    title,
 }: blogQueryParams) {
     const filterOptions = {
         where: {
+            title: { contains: title },
             author: {
                 remote_id: author_id,
+                name: name,
             },
             published: true,
         },

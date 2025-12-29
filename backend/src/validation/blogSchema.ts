@@ -7,12 +7,13 @@ const postErrors = {
     contentEmpty: "content cannot be empty",
 };
 
-
 const BlogGetQueryParamsSchema = z.object({
     order: z.enum(["asc", "desc"]),
     author_id: z.uuidv4().optional(),
     page: z.coerce.number().min(1).default(1),
     size: z.coerce.number().min(5).max(20).default(10),
+    name: z.string().nonempty().optional(),
+    title: z.string().nonempty().optional(),
 });
 
 const BlogPostSchema = z
