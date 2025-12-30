@@ -4,7 +4,7 @@ class NotFoundError extends Error {
     errors: Array<string>;
 
     constructor(
-        status: number,
+        status: number = 404,
         data: object,
         errors: string[] = ["resource not found"]
     ) {

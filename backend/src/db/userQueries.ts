@@ -38,4 +38,21 @@ async function findUserByName(name: string): Promise<Users | null> {
     return user;
 }
 
-export { createUser, findUserById, findUserByName };
+async function fetchSingleUserBlog({
+    author_id,
+    blog_id,
+}: {
+    author_id: number;
+    blog_id: string;
+}) {
+    const blog = await prisma.blogs.findUniqueOrThrow({
+        where: {
+            author_id: author_id,
+            remote_id: blog_id,
+        },
+    });
+
+    return blog;
+}
+
+export { createUser, findUserById, findUserByName, fetchSingleUserBlog };

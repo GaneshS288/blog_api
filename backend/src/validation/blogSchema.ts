@@ -7,6 +7,14 @@ const postErrors = {
     contentEmpty: "content cannot be empty",
 };
 
+const BlogPUTSchema = z.object({
+    title: z
+        .string()
+        .nonempty("title cannot be empty")
+        .max(100, "title cannot be longer than 100 characters"),
+    content: z.string().nonempty("content cannot be empty"),
+});
+
 const BlogGetQueryParamsSchema = z.object({
     order: z.enum(["asc", "desc"]),
     author_id: z.uuidv4().optional(),
@@ -36,4 +44,4 @@ const BlogPostSchema = z
         };
     });
 
-export { BlogPostSchema, BlogGetQueryParamsSchema };
+export { BlogPostSchema, BlogGetQueryParamsSchema, BlogPUTSchema };

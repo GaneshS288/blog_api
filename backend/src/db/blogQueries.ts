@@ -37,6 +37,16 @@ async function fetchPublishedSingleBlog(blogId: string) {
 
     return blog;
 }
+/**should only be used internally as it returns primary keys */
+async function fetchAnySingleBlog(blogId: string) {
+    const blog = await prisma.blogs.findUnique({
+        where: {
+            remote_id: blogId,
+        },
+    });
+
+    return blog;
+}
 
 async function fetchPublishedBlogs({
     order = "desc",
@@ -102,11 +112,43 @@ async function createBlog({
         },
         omit: {
             id: true,
-            author_id: true
-        }
+            author_id: true,
+        },
     });
 
     return blog;
 }
 
-export { createBlog, fetchPublishedBlogs, fetchPublishedSingleBlog };
+async function editBlog({
+    id,
+    title,
+    content,
+}: {
+    id: string;
+    title: string;
+    content: string;
+}) {
+    const res = await prisma.blogs.update({
+        omit : {
+            id: true,
+            published: true
+        },
+        data: {
+            title: title,
+            content: content,
+        },
+        where: {
+            remote_id: id,
+        },
+    });
+
+    return res;
+}
+
+export {
+    createBlog,
+    fetchPublishedBlogs,
+    fetchPublishedSingleBlog,
+    editBlog,
+    fetchAnySingleBlog,
+};

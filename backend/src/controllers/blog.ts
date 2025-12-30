@@ -1,16 +1,20 @@
 import { Request, Response } from "express";
 import {
     createBlog,
+    editBlog,
+    fetchAnySingleBlog,
     fetchPublishedBlogs,
     fetchPublishedSingleBlog,
 } from "../db/blogQueries.ts";
 import {
     BlogGetQueryParamsSchema,
     BlogPostSchema,
+    BlogPUTSchema,
 } from "../validation/blogSchema.ts";
 import { flattenError } from "../validation/validationUtils.ts";
 import ApiError from "../errors/apiError.ts";
 import { NotFoundError } from "../errors/notFoundError.ts";
+import { AuthorizationError } from "../errors/AuthorizationError.ts";
 
 async function postBlog(req: Request, res: Response) {
     const user = req.user;
@@ -57,6 +61,7 @@ async function getPublishedBlogs(req: Request, res: Response) {
 }
 
 async function getSinglePublishedBlog(req: Request, res: Response) {
+    //this is blog id from path
     const { id } = req.params;
 
     if (!id || id.trim() === "")
@@ -69,4 +74,31 @@ async function getSinglePublishedBlog(req: Request, res: Response) {
     res.status(200).json({ data: blog });
 }
 
-export { postBlog, getPublishedBlogs, getSinglePublishedBlog };
+async function updateSingleBlog(req: Request, res: Response) {
+    const { title, content } = req.body;
+    const { id } = req.params;
+    const validationResult = BlogPUTSchema.safeParse({
+        title,
+        content,
+    });
+
+    const blogExists = await fetchAnySingleBlog(id);
+
+    if (!blogExists) throw new NotFoundError(404, {}, ["blog not found"]);
+    if (validationResult.success === false) {
+        const validationErrors = flattenError(validationResult.error);
+        throw new ApiError(400, [], null, validationErrors);
+    }
+    if (blogExists.author_id !== req.user?.id) throw new AuthorizationError();
+
+    const updatedBlog = await editBlog({ id, ...validationResult.data });
+
+    res.status(200).json({ data: updatedBlog });
+}
+
+export {
+    postBlog,
+    getPublishedBlogs,
+    getSinglePublishedBlog,
+    updateSingleBlog,
+};
