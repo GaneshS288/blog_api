@@ -129,9 +129,9 @@ async function editBlog({
     content: string;
 }) {
     const res = await prisma.blogs.update({
-        omit : {
+        omit: {
             id: true,
-            published: true
+            published: true,
         },
         data: {
             title: title,
@@ -145,10 +145,23 @@ async function editBlog({
     return res;
 }
 
+async function removeBlog(id: string) {
+    await prisma.blogs.delete({
+        omit: {
+            id: true,
+            author_id: true,
+        },
+        where: {
+            remote_id: id,
+        },
+    });
+}
+
 export {
     createBlog,
     fetchPublishedBlogs,
     fetchPublishedSingleBlog,
     editBlog,
+    removeBlog,
     fetchAnySingleBlog,
 };

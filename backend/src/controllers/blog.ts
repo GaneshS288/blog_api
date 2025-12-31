@@ -5,6 +5,7 @@ import {
     fetchAnySingleBlog,
     fetchPublishedBlogs,
     fetchPublishedSingleBlog,
+    removeBlog,
 } from "../db/blogQueries.ts";
 import {
     BlogGetQueryParamsSchema,
@@ -96,9 +97,22 @@ async function updateSingleBlog(req: Request, res: Response) {
     res.status(200).json({ data: updatedBlog });
 }
 
+async function deleteSingleBlog(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const blogExists = await fetchAnySingleBlog(id);
+    if (!blogExists) throw new NotFoundError(404, {}, ["blog not found"]);
+    if (blogExists.author_id !== req.user?.id) throw new AuthorizationError();
+
+    await removeBlog(id);
+
+    res.sendStatus(204);
+}
+
 export {
     postBlog,
     getPublishedBlogs,
     getSinglePublishedBlog,
     updateSingleBlog,
+    deleteSingleBlog,
 };
