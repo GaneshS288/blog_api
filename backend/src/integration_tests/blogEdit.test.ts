@@ -91,10 +91,29 @@ describe("Editing a blog", () => {
 
         const fuwanteBlogId = getBlogsRes.body.data.blogs[0].remote_id;
 
-        const editRes = await api
+        await api
             .put(`/blog/${fuwanteBlogId}`)
             .set({ authorization: `Bearer ${token}` })
             .send({ title: "This is my blog", content: "my content" })
             .expect(403);
+    });
+
+    test("return 404 if blog is not found", async () => {
+        const api = request(app);
+
+        await api.post("/auth/signup").send(dummyNewUser).expect(201);
+
+        const loginRes = await api
+            .post("/auth/login")
+            .send({ name: dummyNewUser.name, password: dummyNewUser.password })
+            .expect(200);
+
+        const token = loginRes.body.token;
+
+        await api
+            .put(`/blog/wd234a$dw`)
+            .set({ authorization: `Bearer ${token}` })
+            .send({ title: "This is my blog", content: "my content" })
+            .expect(404);
     });
 });
