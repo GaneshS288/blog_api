@@ -48,12 +48,12 @@ model Blogs {
 }
 
 model Blog_likes {
-  id      Int   @id @default(autoincrement())
   user    Users @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
   blog    Blogs @relation(fields: [blog_id], references: [id], onDelete: Cascade)
   blog_id Int
 
+  @@id(name: "id", [user_id, blog_id])
   @@map("blog_likes")
 }
 
@@ -80,12 +80,12 @@ model Comments {
 }
 
 model Comment_likes {
-  id      Int   @id @default(autoincrement())
   user    Users @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id Int
 
   comment    Comments @relation(fields: [comment_id], references: [id], onDelete: Cascade)
   comment_id Int
 
+  @@id(name: "id", [user_id, comment_id])
   @@map("comment_likes")
 }
