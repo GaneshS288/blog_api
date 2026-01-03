@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import {
+    addLikeToBlog,
     createBlog,
+    deleteLikeFromBlog,
     editBlog,
     fetchAnySingleBlog,
+    fetchBlogLikeRecord,
     fetchPublishedBlogs,
     fetchPublishedSingleBlog,
     removeBlog,
@@ -81,7 +84,7 @@ async function updateSingleBlog(req: Request, res: Response) {
     const validationResult = BlogPUTSchema.safeParse({
         title,
         content,
-        published
+        published,
     });
 
     const blogExists = await fetchAnySingleBlog(id);
@@ -110,10 +113,44 @@ async function deleteSingleBlog(req: Request, res: Response) {
     res.sendStatus(204);
 }
 
+async function likeBlog(req: Request, res: Response) {
+    const { id: blogId } = req.params;
+    const userId = req.user?.id as number;
+
+    const blogExists = await fetchAnySingleBlog(blogId);
+    if (!blogExists) throw new NotFoundError(404, {}, ["blog not found"]);
+
+    const likeRecord = await fetchBlogLikeRecord(userId, blogExists.id);
+    if (likeRecord)
+        throw new ApiError(400, {}, ["You have already liked this record"]);
+
+    await addLikeToBlog(userId, blogExists.id);
+
+    res.sendStatus(204);
+}
+
+async function unlikeBlog(req: Request, res: Response) {
+    const { id: blogId } = req.params;
+    const userId = req.user?.id as number;
+
+    const blogExists = await fetchAnySingleBlog(blogId);
+    if (!blogExists) throw new NotFoundError(404, {}, ["blog not found"]);
+
+    const likeRecord = await fetchBlogLikeRecord(userId, blogExists.id);
+    if (!likeRecord)
+        throw new ApiError(400, {}, ["You have not liked this blog"]);
+
+    await deleteLikeFromBlog(userId, blogExists.id);
+
+    res.sendStatus(204);
+}
+
 export {
     postBlog,
     getPublishedBlogs,
     getSinglePublishedBlog,
     updateSingleBlog,
     deleteSingleBlog,
+    likeBlog,
+    unlikeBlog,
 };

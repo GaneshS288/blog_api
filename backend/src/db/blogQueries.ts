@@ -32,7 +32,7 @@ async function fetchPublishedSingleBlog(blogId: string) {
         },
         where: {
             remote_id: blogId,
-            published: true
+            published: true,
         },
     });
 
@@ -124,12 +124,12 @@ async function editBlog({
     id,
     title,
     content,
-    published
+    published,
 }: {
     id: string;
     title: string;
     content: string;
-    published: boolean
+    published: boolean;
 }) {
     const res = await prisma.blogs.update({
         omit: {
@@ -139,7 +139,7 @@ async function editBlog({
         data: {
             title: title,
             content: content,
-            published: published
+            published: published,
         },
         where: {
             remote_id: id,
@@ -161,6 +161,55 @@ async function removeBlog(id: string) {
     });
 }
 
+async function addLikeToBlog(user_id: number, blog_id: number) {
+    await prisma.$transaction([
+        prisma.blog_likes.create({
+            data: {
+                user_id: user_id,
+                blog_id: blog_id,
+            },
+        }),
+        prisma.blogs.update({
+            data: { likes: { increment: 1 } },
+            where: {
+                id: blog_id,
+            },
+        }),
+    ]);
+}
+
+async function fetchBlogLikeRecord(user_id: number, blog_id: number) {
+    const likeRecord = await prisma.blog_likes.findUnique({
+        where: {
+            id: {
+                user_id: user_id,
+                blog_id: blog_id,
+            },
+        },
+    });
+
+    return likeRecord;
+}
+
+async function deleteLikeFromBlog(user_id: number, blog_id: number) {
+    await prisma.$transaction([
+        prisma.blog_likes.delete({
+            where: {
+                id: {
+                    user_id: user_id,
+                    blog_id: blog_id,
+                },
+            },
+        }),
+        prisma.blogs.update({
+            data: { likes: { decrement: 1 } },
+            where: {
+                id: blog_id,
+            },
+        }),
+    ]);
+}
+
 export {
     createBlog,
     fetchPublishedBlogs,
@@ -168,4 +217,7 @@ export {
     editBlog,
     removeBlog,
     fetchAnySingleBlog,
+    addLikeToBlog,
+    deleteLikeFromBlog,
+    fetchBlogLikeRecord,
 };
