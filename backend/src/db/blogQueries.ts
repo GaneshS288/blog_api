@@ -32,6 +32,7 @@ async function fetchPublishedSingleBlog(blogId: string) {
         },
         where: {
             remote_id: blogId,
+            published: true
         },
     });
 
@@ -123,10 +124,12 @@ async function editBlog({
     id,
     title,
     content,
+    published
 }: {
     id: string;
     title: string;
     content: string;
+    published: boolean
 }) {
     const res = await prisma.blogs.update({
         omit: {
@@ -136,6 +139,7 @@ async function editBlog({
         data: {
             title: title,
             content: content,
+            published: published
         },
         where: {
             remote_id: id,

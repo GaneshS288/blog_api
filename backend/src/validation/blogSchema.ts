@@ -13,6 +13,7 @@ const BlogPUTSchema = z.object({
         .nonempty("title cannot be empty")
         .max(100, "title cannot be longer than 100 characters"),
     content: z.string().nonempty("content cannot be empty"),
+    published: z.boolean(),
 });
 
 const BlogGetQueryParamsSchema = z.object({

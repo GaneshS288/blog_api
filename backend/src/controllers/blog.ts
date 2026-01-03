@@ -76,11 +76,12 @@ async function getSinglePublishedBlog(req: Request, res: Response) {
 }
 
 async function updateSingleBlog(req: Request, res: Response) {
-    const { title, content } = req.body;
+    const { title, content, published } = req.body;
     const { id } = req.params;
     const validationResult = BlogPUTSchema.safeParse({
         title,
         content,
+        published
     });
 
     const blogExists = await fetchAnySingleBlog(id);
