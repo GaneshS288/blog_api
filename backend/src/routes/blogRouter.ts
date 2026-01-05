@@ -1,14 +1,17 @@
 import { Router } from "express";
 import userExtractor from "../util/userExtractor.ts";
+
 import {
-    deleteSingleBlog,
     getPublishedBlogs,
     getSinglePublishedBlog,
+} from "../controllers/blog/blogGetControllers.ts";
+import { postBlog } from "../controllers/blog/blogPostControllers.ts";
+import { updateSingleBlog } from "../controllers/blog/blogEditControllers.ts";
+import { deleteSingleBlog } from "../controllers/blog/blogDeleteControllers.ts";
+import {
     likeBlog,
-    postBlog,
     unlikeBlog,
-    updateSingleBlog,
-} from "../controllers/blog.ts";
+} from "../controllers/blog/blogLikeControllers.ts";
 
 const blogRouter = Router();
 
