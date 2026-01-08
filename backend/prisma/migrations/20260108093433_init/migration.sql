@@ -42,7 +42,7 @@ CREATE TABLE "comments" (
     "likes" INTEGER NOT NULL DEFAULT 0,
     "author_id" INTEGER NOT NULL,
     "blog_id" INTEGER NOT NULL,
-    "parent_comment_id" INTEGER NOT NULL,
+    "parent_comment_id" INTEGER,
 
     CONSTRAINT "comments_pkey" PRIMARY KEY ("id")
 );
