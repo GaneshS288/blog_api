@@ -18,4 +18,14 @@ const CommentQueryParamsSchema = z.object({
     size: z.coerce.number().min(5).max(20).default(10),
 });
 
-export { commentCreateSchmea, ReplyCreateSchema, CommentQueryParamsSchema };
+const CommentEditSchema = z.object({
+    commentId: z.uuidv4(),
+    content: z.string().trim().nonempty("reply can't be empty"),
+});
+
+export {
+    commentCreateSchmea,
+    ReplyCreateSchema,
+    CommentQueryParamsSchema,
+    CommentEditSchema,
+};

@@ -11,6 +11,9 @@ const dummyExistingUsers = [
     { name: "fuwante", password: "drift&3ace", passwordConfirm: "drift&3ace" },
 ];
 
+const fuwanteUserDetails = { name: "martin", password: "stall$3000", passwordConfirm: "stall$3000" };
+const martinUserDetails = { name: "fuwante", password: "drift&3ace", passwordConfirm: "drift&3ace" };
+
 const dummyNewUser = {
     name: "ganesh",
     password: "ihatetheworldandmartin",
@@ -65,4 +68,4 @@ async function seedBlogs() {
     });
 }
 
-export { dummyExistingUsers, dummyNewUser, seedBlogs, blogPostSetup, commentCount };
+export { dummyExistingUsers, dummyNewUser, seedBlogs, blogPostSetup, commentCount, fuwanteUserDetails, martinUserDetails };
