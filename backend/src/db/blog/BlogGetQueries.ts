@@ -56,7 +56,7 @@ async function fetchPublishedBlogs({
             title: { contains: title },
             author: {
                 remote_id: author_id,
-                name: name,
+                name: { contains: name },
             },
             published: true,
         },
@@ -91,6 +91,5 @@ async function fetchPublishedBlogs({
 
     return { blogs: returnedBlogs, count };
 }
-
 
 export { fetchPublishedSingleBlog, fetchAnySingleBlog, fetchPublishedBlogs };
