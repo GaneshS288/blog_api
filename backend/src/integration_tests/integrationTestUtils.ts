@@ -2,6 +2,9 @@ import prisma from "../db/prisma.ts";
 import bcrypt from "bcryptjs";
 import { SALT_ROUNDS, SECRET_PASSWORD } from "../envConfig.ts";
 import blogJson from "./dummyBlogs.json" with { type: "json" };
+import commentJson from "./dummyComments.json" with { type: "json" };
+
+const commentCount = commentJson.length;
 
 const dummyExistingUsers = [
     { name: "martin", password: "stall$3000", passwordConfirm: "stall$3000" },
@@ -44,10 +47,22 @@ async function seedBlogs() {
         ...blog,
         author_id: userMartin!.id,
     }));
-    //change the first blog to have a different user id
-    dummyBlogs[0].author_id = userFuwante!.id;
+    //change the first blog to have a different user id and remove it from array
+    const fuwnateBlogContent = dummyBlogs.shift()!;
+    fuwnateBlogContent.author_id = userFuwante!.id;
+
+    const fuwanteBlogCommentsContent = commentJson.map((comment) => ({
+        ...comment,
+        author_id: userFuwante!.id,
+    }));
 
     await prisma.blogs.createMany({ data: dummyBlogs });
+    await prisma.blogs.create({
+        data: {
+            ...fuwnateBlogContent,
+            comments: { createMany: { data: fuwanteBlogCommentsContent } },
+        },
+    });
 }
 
-export { dummyExistingUsers, dummyNewUser, seedBlogs, blogPostSetup };
+export { dummyExistingUsers, dummyNewUser, seedBlogs, blogPostSetup, commentCount };

@@ -11,4 +11,11 @@ const ReplyCreateSchema = z.object({
     parentCommentId: z.uuidv4().optional(),
 });
 
-export { commentCreateSchmea, ReplyCreateSchema };
+const CommentQueryParamsSchema = z.object({
+    order: z.enum(["asc", "desc"]),
+    blogId: z.uuidv4(),
+    page: z.coerce.number().min(1).default(1),
+    size: z.coerce.number().min(5).max(20).default(10),
+});
+
+export { commentCreateSchmea, ReplyCreateSchema, CommentQueryParamsSchema };
