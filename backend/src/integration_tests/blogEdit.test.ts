@@ -2,10 +2,10 @@ import { describe, test, beforeEach, expect } from "vitest";
 import request from "supertest";
 import app from "../app.ts";
 
-import { dummyNewUser, blogGetSetup } from "./integrationTestUtils.ts";
+import { dummyNewUser, seedBlogs } from "./integrationTestUtils.ts";
 
 beforeEach(async () => {
-    await blogGetSetup();
+    await seedBlogs();
 });
 
 describe("Editing a blog", () => {

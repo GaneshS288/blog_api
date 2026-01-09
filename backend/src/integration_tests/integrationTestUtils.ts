@@ -26,7 +26,7 @@ async function blogPostSetup() {
     await prisma.users.createMany({ data: users });
 }
 
-async function blogGetSetup() {
+async function seedBlogs() {
     await prisma.users.deleteMany();
     await prisma.blogs.deleteMany();
     const users = dummyExistingUsers.map((user) => {
@@ -50,4 +50,4 @@ async function blogGetSetup() {
     await prisma.blogs.createMany({ data: dummyBlogs });
 }
 
-export { dummyExistingUsers, dummyNewUser, blogGetSetup, blogPostSetup };
+export { dummyExistingUsers, dummyNewUser, seedBlogs, blogPostSetup };

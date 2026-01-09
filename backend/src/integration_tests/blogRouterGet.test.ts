@@ -1,10 +1,10 @@
 import { describe, test, beforeAll, expect } from "vitest";
 import request from "supertest";
 import app from "../app.ts";
-import { blogGetSetup } from "./integrationTestUtils.ts";
+import { seedBlogs } from "./integrationTestUtils.ts";
 
 beforeAll(async () => {
-    await blogGetSetup();
+    await seedBlogs();
 });
 
 describe("returning blogs from the api", () => {
