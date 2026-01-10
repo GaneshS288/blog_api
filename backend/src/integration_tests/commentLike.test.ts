@@ -5,7 +5,6 @@ import app from "../app.ts";
 import {
     fuwanteUserDetails,
     seedBlogs,
-    martinUserDetails,
 } from "./integrationTestUtils.ts";
 
 beforeEach(async () => {
