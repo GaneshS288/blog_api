@@ -106,7 +106,7 @@ describe("blog likes test", () => {
             .expect(400);
     });
 
-    test("returns 400 if the user tries to remove like from a blog they haven't liked", async () => {
+    test("returns 404 if the user tries to remove like from a blog they haven't liked", async () => {
         const api = request(app);
 
         await api.post("/auth/signup").send(dummyNewUser).expect(201);
@@ -128,6 +128,6 @@ describe("blog likes test", () => {
         await api
             .delete(`/blog/${fuwanteBlogId}/like`)
             .set({ authorization: `Bearer ${token}` })
-            .expect(400);
+            .expect(404);
     });
 });
