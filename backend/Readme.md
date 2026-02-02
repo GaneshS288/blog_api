@@ -1,0 +1,127 @@
+# Introduction
+
+This directory contains the backend api application for the blog project. Please see below for details of api and instructions for setting up the project locally.
+
+## Setup Instructions
+
+### software needed
+- Node version 22 or higher
+- postgres version 16 or higher
+
+### how to run the api
+
+- run ``npm install`` to install all dependencies
+- create and populate the ``.env`` file. Look at ``example.env`` for explantions
+- run ``npx prisma migrate`` and ``npx prisma generate`` to sync your postgres db and generate prisma client for communicating with db
+- run ``npm run prod`` to start the api. You should be good to go
+
+## Api docs
+
+*Note: some of the endpoints are protected. They require you to send the jwt token to the server in authorization header with Bearer schema (eg. <"Authorization": "Bearer tokenValue">).
+All protected routes will have an note with * at the end to explain this*
+
+### /signup
+
+expects ``application/json`` format for the body with these properties.
+
+```js
+{
+    name: string, //minimum 4 characters
+    password: string, // minimum 8 characters
+    passwordConfirm: string // must match password
+}
+```
+
+on success responds with ``application/json`` body containing these properties.
+
+```js
+{
+    status: 201,
+    data: { message: "user successfully signed up"}
+}
+```
+On failure returns a 500 or 400 error. Please see [Errors](#Errors)
+
+### /login
+
+expects ``application/json`` format for the body with these properties
+
+```js
+    {
+        name: string, //minimum 4 characters
+        password: string, // minimum 8 characters
+    }
+```
+on success responds with ``application/json`` body containing these properties.
+
+```js
+{
+    status: 200,
+    data: { message: "succesfully logged in"}
+    token: jwtToken
+}
+```
+the token is used when sending requests to protected routes, refer to the not at the start of api docs.
+
+on failure returns a 500 or 400 error. Please see [Errors](#Errors)
+
+### Errors
+
+#### 400 malformed input error -
+
+returns response with 400 status and this body in ``application/json`` content type. Sent when request data was malformed/missing.
+
+```js
+{
+    status: 400,
+    data: {}
+    errors: []
+    validationErrors: { name: "name must be at least 4 characters long"} //contains an object with validation errors mapped to corrsponding fields
+}
+```
+
+#### 404 not found
+
+returns response with 404 status and this body in ``application/json`` content type. Sent when the request resource or the resource on which an action should be performed is missing
+
+```js
+{
+    status: 404,
+    data: {}
+    errors: ["Resource not found"] //array with error messages
+```
+
+#### 500 server error
+
+returns response with 500 status and this body in ``application/json`` content type. Sent when something goes wrong on server side
+
+```js
+{
+    status: 500,
+    data: {}
+    errors: ["something unexpected happend on the server"] //array with error messages
+```
+
+#### 403 Authorization Error
+
+returns response with 500 status and this body in ``application/json`` content type. Send when a user performs an action (delete, update) that they are not allowed to
+
+```js
+{   
+    status: 403
+    data = {},
+    errors = ["you're not authorized to perform this action"] // error message array
+}
+```
+
+#### 401 Unauthenticated Error
+
+returns response with 401 status and this body in ``application/json`` content type. Sent when the jwt token is invalid/expired
+
+```js
+{
+    status: 401,
+    data: {}
+    errors: ["invalid token or user"]
+}
+```
