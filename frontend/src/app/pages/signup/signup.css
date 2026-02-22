@@ -1,7 +1,7 @@
 .signup-form-container {
     display: grid;
     place-content: center;
-    grid-template-columns: minmax(250px, 600px);
+    grid-template-columns: minmax(250px, 500px);
     min-height: 100vh;
     background-color: var(--bg-main-color);
 }
@@ -50,21 +50,29 @@
     color: var(--text-lighter-color);
     font-weight: 600;
     font-size: inherit;
-    box-shadow: 0 2px 2px grey;
+    box-shadow: 2px 2px 5px var(--box-shadow-color);
 }
 
+.signup-form-container button:hover {
+    opacity: 0.9;
+}
+
+.signup-form-container button:active {
+    box-shadow: 2px 2px 2px var(--box-shadow-color) inset;
+}
 .signup-form-container a {
-    background-color: var(--bg-muted-color);
     border-radius: 9999px;
-    border: 1px solid black;
     padding: 1em;
     font-family: inherit;
     color: var(--text-darker-color);
     font-weight: 600;
     font-size: inherit;
-    text-decoration: none;
     text-align: center;
     margin-bottom: 1em;
+}
+
+.signup-form-container a:hover {
+    opacity: 0.9;
 }
 
 .signup-form-container input {

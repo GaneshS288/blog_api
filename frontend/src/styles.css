@@ -27,6 +27,7 @@
     --text-darker-color: var(--black);
     --text-muted-color: var(--light-grey);
     --text-lighter-color: var(--light-white);
+    --box-shadow-color: var(--light-grey);
 
     font-family: Geist, Arial, Helvetica, sans-serif;
     color: var(--text-darker-color);
