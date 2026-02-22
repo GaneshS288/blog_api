@@ -1,0 +1,92 @@
+.login-form-container {
+    display: grid;
+    place-content: center;
+    grid-template-columns: minmax(250px, 500px);
+    min-height: 100vh;
+    background-color: var(--bg-main-color);
+}
+
+.login-form-container > form {
+    padding: 2em;
+}
+
+.login-form-container fieldset {
+    border: 1px solid var(--accent-color);
+    border-radius: 2em;
+    display: grid;
+    row-gap: 2em;
+    padding: 1em 2em;
+
+    & div {
+        display: grid;
+        row-gap: 0.6em;
+    }
+}
+
+.login-form-container legend {
+    text-align: center;
+    font-size: 1.4rem;
+    padding: 0 0.4em;
+    color: var(--accent-color);
+    font-family: "Lexend Deca", 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+.login-form-container label {
+    font-weight: 500;
+    display: grid;
+
+    & span:last-child {
+        font-size: 0.8rem;
+        color: var(--text-muted-color);
+    }
+}
+
+.login-form-container button {
+    background-color: var(--accent-color);
+    border-radius: 2em;
+    border: none;
+    padding: 1em;
+    font-family: inherit;
+    color: var(--text-lighter-color);
+    font-weight: 600;
+    font-size: inherit;
+    box-shadow: 2px 2px 5px var(--box-shadow-color);
+}
+
+.login-form-container button:hover {
+    opacity: 0.9;
+}
+
+.login-form-container button:active {
+    box-shadow: 2px 2px 2px var(--box-shadow-color) inset;
+}
+.login-form-container a {
+    border-radius: 9999px;
+    padding: 1em;
+    font-family: inherit;
+    color: var(--text-darker-color);
+    font-weight: 600;
+    font-size: inherit;
+    text-align: center;
+    margin-bottom: 1em;
+}
+
+.login-form-container a:hover {
+    opacity: 0.9;
+}
+
+.login-form-container input {
+    padding: 0.6em;
+    border: 1px solid var(--text-darker-color);
+    border-radius: 0.4em;
+    color: var(--text-muted-color);
+    font: inherit;
+}
+
+.login-form-container input:user-invalid {
+    outline-color: var(--invalid-state-color);
+}
+
+.login-form-container input:user-valid {
+    outline-color: var(--valid-state-color);
+}

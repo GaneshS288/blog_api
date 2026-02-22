@@ -1,0 +1,37 @@
+<div class="login-form-container">
+  <form action="/">
+    <fieldset>
+      <legend>Login</legend>
+
+      <div>
+        <label for="username"><span>Username</span> <span> (at least 4 characters) </span> </label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          autocomplete="username"
+          required
+          minlength="4"
+          placeholder="John doe"
+        />
+      </div>
+
+      <div>
+        <label for="password"><span>Password</span> <span>(at least 8 characters)</span></label>
+        <input
+          type="password"
+          name="password"
+          id="password"
+          autocomplete="new-password"
+          required
+          minlength="8"
+        />
+      </div>
+
+      <div>
+        <button type="submit">Log into account</button>
+        <a href="/">Back to Home</a>
+      </div>
+    </fieldset>
+  </form>
+</div>
