@@ -1,1 +1,35 @@
 /* You can add global styles to this file, and also import other style files */
+@font-face {
+    font-family: "Lexend deca";
+    src: url(./assets/fonts/LexendDeca-VariableFont_wght.woff2);
+}
+
+@font-face {
+    font-family: "Geist";
+    src: url(./assets/fonts/Geist-VariableFont_wght.woff2);
+}
+
+:root {
+    --light-blue: #409091;
+    --black: #09090b;
+    --white: #fffffff0;
+    --light-white: #f8fafc;
+    --light-green:#409664;
+    --light-red: #F95E23;
+    --light-grey: #57534d;
+    
+
+    --accent-color: var(--light-blue);
+    --bg-main-color: var(--white);
+    --bg-muted-color: var(--light-white);
+    --valid-state-color: var(--light-green);
+    --invalid-state-color: var(--light-red);
+    --text-darker-color: var(--black);
+    --text-muted-color: var(--light-grey);
+    --text-lighter-color: var(--light-white);
+
+    font-family: Geist, Arial, Helvetica, sans-serif;
+    color: var(--text-darker-color);
+    line-height: 1.5;
+    box-sizing: border-box;
+}
