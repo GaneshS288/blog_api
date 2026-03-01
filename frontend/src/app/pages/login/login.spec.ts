@@ -20,4 +20,14 @@ describe('Login', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it("should render the form", () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector("form")).toBeTruthy();
+  })
+
+  it("legend should have signup", () => {
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector("legend")?.textContent).toMatch("Login");
+  })
 });

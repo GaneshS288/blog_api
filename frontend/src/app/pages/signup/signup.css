@@ -17,7 +17,7 @@
     row-gap: 2em;
     padding: 1em 2em;
 
-    & div {
+    & > div {
         display: grid;
         row-gap: 0.6em;
     }
@@ -31,12 +31,11 @@
     font-family: "Lexend Deca", 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-.signup-form-container label {
+.signup-form-container .label-container {
     font-weight: 500;
     display: grid;
 
-    & span:last-child {
-        font-size: 0.8rem;
+    & small {
         color: var(--text-muted-color);
     }
 }
@@ -83,10 +82,20 @@
     font: inherit;
 }
 
-.signup-form-container input:user-invalid {
+.signup-form-container input.ng-touched.ng-invalid {
+    border-color: var(--invalid-state-color);
     outline-color: var(--invalid-state-color);
 }
 
-.signup-form-container input:user-valid {
+.signup-form-container input.ng-touched.ng-valid {
+    border-color: var(--valid-state-color);
     outline-color: var(--valid-state-color);
+}
+
+.signup-form-container ul {
+    margin: 0;
+    padding-left: 1em;
+    font-size: 0.8rem;
+
+    color: var(--invalid-state-color);
 }
